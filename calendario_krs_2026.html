@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendário KRS · Amor Saúde 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:       #61C1D0;
+    --teal-dark:  #3fa3b3;
+    --teal-light: #e8f7f9;
+    --teal-mid:   #b3e3ea;
+    --red:        #D73834;
+    --red-light:  #fce8e8;
+    --white:      #FFFFFF;
+    --offwhite:   #f4f8f9;
+    --gray-light: #e8edf0;
+    --gray-mid:   #a0b0b8;
+    --gray-dark:  #5a6a72;
+    --text:       #2d3e45;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--offwhite);
+    font-family: 'Nunito', Arial, sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 20px 32px;
+  }
+  .header {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 18px;
+  }
+  .logo-mark {
+    width: 48px; height: 48px; background: var(--teal);
+    border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; box-shadow: 0 4px 14px rgba(97,193,208,0.4);
+    font-size: 1.5rem;
+  }
+  .brand-name {
+    font-size: 0.72rem; font-weight: 900; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--teal); display: block;
+  }
+  .brand-name span { color: var(--red); }
+  h1 { font-size: 1.1rem; font-weight: 900; color: var(--text); }
+
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tab {
+    font-family: 'Nunito', sans-serif; font-size: 0.72rem; font-weight: 900;
+    letter-spacing: 0.05em; text-transform: uppercase; padding: 7px 20px;
+    border-radius: 50px; border: 2px solid var(--teal-mid); cursor: pointer;
+    background: white; color: var(--teal-dark); transition: all 0.2s;
+  }
+  .tab.active { background: var(--teal); color: white; border-color: var(--teal); box-shadow: 0 4px 12px rgba(97,193,208,0.35); }
+  .tab:hover:not(.active) { background: var(--teal-light); border-color: var(--teal); }
+
+  .calendar-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    min-width: 1100px; background: white; border-radius: 12px;
+    overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+  }
+  thead th {
+    font-size: 0.63rem; font-weight: 900; letter-spacing: 0.08em;
+    text-transform: uppercase; color: white; background: var(--teal);
+    padding: 10px 5px; text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.15);
+  }
+  thead th:first-child { text-align: left; padding-left: 14px; min-width: 115px; }
+  thead th:nth-child(2) { text-align: left; padding-left: 8px; min-width: 130px; }
+
+  tbody tr:nth-child(even) { background: var(--offwhite); }
+  tbody tr:hover { background: var(--teal-light) !important; }
+
+  td {
+    padding: 6px 4px; border-bottom: 1px solid var(--gray-light);
+    border-right: 1px solid var(--gray-light);
+    vertical-align: middle; text-align: center; min-width: 72px;
+  }
+  td:first-child { text-align: left; padding: 8px 8px 8px 14px; border-right: 2px solid var(--gray-light); }
+  td:nth-child(2) {
+    text-align: left; padding: 6px 8px; font-size: 0.62rem;
+    color: var(--gray-dark); line-height: 1.35; font-weight: 600;
+    border-right: 2px solid var(--gray-light);
+  }
+  .row-label { display: flex; align-items: center; gap: 7px; font-size: 0.67rem; font-weight: 900; line-height: 1.2; }
+  .row-stripe { width: 4px; border-radius: 4px; align-self: stretch; min-height: 18px; flex-shrink: 0; }
+  .cell-tag {
+    display: block; font-size: 0.57rem; font-weight: 800; padding: 3px 6px;
+    border-radius: 5px; line-height: 1.3; max-width: 88px; color: white;
+    text-align: center; margin: 1px auto; letter-spacing: 0.01em;
+  }
+
+  /* KR VIEW */
+  #view-diretoria { display: block; }
+  #view-kr { display: none; }
+
+  .kr-section { margin-bottom: 18px; }
+  .kr-header {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    border-radius: 10px 10px 0 0; font-size: 0.72rem; font-weight: 900;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .kr1-header { background: var(--teal); color: white; }
+  .kr2-header { background: var(--teal-dark); color: white; }
+  .kr-badge { background: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 20px; font-size: 0.62rem; }
+
+  .kr-table {
+    width: 100%; min-width: 900px; border-collapse: separate; border-spacing: 0;
+    background: white; border-radius: 0 0 10px 10px; overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  }
+  .kr-table thead th {
+    background: var(--teal-light); color: var(--teal-dark); font-size: 0.62rem;
+    font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 8px 6px; text-align: center; border-bottom: 2px solid var(--teal-mid);
+    border-right: 1px solid var(--teal-mid);
+  }
+  .kr-table thead th:first-child { text-align: left; padding-left: 14px; min-width: 130px; }
+  .kr-table td {
+    padding: 6px 5px; border-bottom: 1px solid var(--gray-light);
+    border-right: 1px solid var(--gray-light);
+    vertical-align: top; text-align: center; min-width: 90px;
+  }
+  .kr-table td:first-child {
+    text-align: left; padding-left: 14px; font-size: 0.63rem; font-weight: 900;
+    color: var(--teal-dark); border-right: 2px solid var(--teal-mid); line-height: 1.4;
+  }
+  .kpi-meta { color: var(--gray-mid); font-weight: 700; font-size: 0.58rem; }
+
+  .kr-tag {
+    display: block; font-size: 0.57rem; font-weight: 800; padding: 4px 7px;
+    border-radius: 5px; line-height: 1.35; margin: 2px 0; text-align: left;
+  }
+  .kr-tag .tag-title { display: block; font-size: 0.6rem; }
+  .kr-tag .tag-sub { opacity: 0.8; font-size: 0.54rem; font-weight: 600; display: block; }
+  .kr1-tag  { background: rgba(97,193,208,0.14); color: #1a7080; border-left: 3px solid var(--teal); }
+  .kr2-tag  { background: rgba(63,163,179,0.14); color: #155a68; border-left: 3px solid var(--teal-dark); }
+  .pleito-tag { background: rgba(215,56,52,0.12); color: #9c2020; border-left: 3px solid var(--red); }
+  .ambos-tag { background: rgba(160,176,184,0.15); color: #4a6068; border-left: 3px solid var(--ambos); }
+
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.63rem; font-weight: 700; color: var(--gray-dark); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+  .footer-bar {
+    height: 4px; background: linear-gradient(90deg, var(--teal) 0%, var(--red) 100%);
+    border-radius: 2px; margin-top: 20px; opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-mark" style="background:white;padding:4px;">
+    <svg width="40" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+      <text x="2" y="26" font-family="Arial,sans-serif" font-weight="900" font-size="18" fill="#61C1D0">amor</text>
+      <text x="54" y="26" font-family="Arial,sans-serif" font-weight="900" font-size="18" fill="#D73834">saúde</text>
+      <path d="M108 8 L112 14 L116 8 Q120 4 116 1 Q112 -2 108 1 Q104 4 108 8Z" fill="#D73834" transform="scale(0.5) translate(100,10)"/>
+    </svg>
+  </div>
+  <div>
+    <h1>Calendário KRS · Diretoria 2026</h1>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('diretoria',this)">Calendário Geral</button>
+  <button class="tab" onclick="switchTab('kr1',this)">KR 1</button>
+  <button class="tab" onclick="switchTab('kr2',this)">KR 2</button>
+  <button class="tab" onclick="switchTab('kr3',this)">KR 3</button>
+  <button class="tab" onclick="switchTab('kr4',this)">KR 4</button>
+  <button class="tab" onclick="switchTab('kr5',this)">KR 5</button>
+  <button class="tab" onclick="switchTab('neg',this)">Negócio</button>
+</div>
+
+<div id="view-diretoria">
+  <div class="calendar-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Iniciativa</th><th>Objetivo</th>
+          <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th>
+          <th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th>
+          <th>Set</th><th>Out</th><th>Nov</th><th>Dez</th>
+        </tr>
+      </thead>
+      <tbody id="dir-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="view-kr">
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#D73834"></div> Pleito</div>
+  </div>
+  <div id="sec-kr1" class="kr-section">
+    <div class="kr-header kr1-header">KR 1 · Crescimento de 15% na Efetivação em Odontologia <span class="kr-badge">Odontologia</span></div>
+    <div class="calendar-wrap">
+      <table class="kr-table">
+        <thead><tr><th>KPI</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th></tr></thead>
+        <tbody id="kr1-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="sec-kr2" class="kr-section">
+    <div class="kr-header kr2-header">KR 2 · Crescimento em Exames & Procedimentos <span class="kr-badge">Exames</span></div>
+    <div class="calendar-wrap">
+      <table class="kr-table">
+        <thead><tr><th>KPI</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th></tr></thead>
+        <tbody id="kr2-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="sec-kr3" class="kr-section">
+    <div class="kr-header" style="background:rgba(234,88,12,0.15);color:#ea580c;border-left:3px solid #ea580c;">KR 3 · Disponibilidade de Agenda e Suficiência de Rede <span class="kr-badge" style="background:#ea580c22;color:#ea580c">Agenda &amp; Rede</span></div>
+    <div class="calendar-wrap">
+      <table class="kr-table">
+        <thead><tr><th>Elemento</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th></tr></thead>
+        <tbody id="kr3-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="sec-kr4" class="kr-section">
+    <div class="kr-header" style="background:rgba(16,185,129,0.15);color:#059669;border-left:3px solid #059669;">KR 4 · Expansão das Clínicas <span class="kr-badge" style="background:#05966922;color:#059669">Expansão</span></div>
+    <div class="calendar-wrap">
+      <table class="kr-table">
+        <thead><tr><th>Elemento</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th></tr></thead>
+        <tbody id="kr4-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="sec-kr5" class="kr-section">
+    <div class="kr-header" style="background:rgba(139,92,246,0.15);color:#7c3aed;border-left:3px solid #7c3aed;">KR 5 · Credenciamento dos Profissionais de Saúde <span class="kr-badge" style="background:#7c3aed22;color:#7c3aed">Credenciamento</span></div>
+    <div class="calendar-wrap">
+      <table class="kr-table">
+        <thead><tr><th>Elemento</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th></tr></thead>
+        <tbody id="kr5-body"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="sec-neg" class="kr-section">
+    <div class="kr-header" style="background:rgba(15,118,110,0.15);color:#0f766e;border-left:3px solid #0f766e;">Outros / Negócio <span class="kr-badge" style="background:#0f766e22;color:#0f766e">Negócio</span></div>
+    <div class="calendar-wrap">
+      <table class="kr-table">
+        <thead><tr><th>Elemento</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th></tr></thead>
+        <tbody id="neg-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="footer-bar"></div>
+
+<script>
+const dirRows = [
+  { label:'Institucional', color:'#94d4de', objetivo:'Relacionar, educar e promover.',
+    cells:{ Mar:'Saúde Bucal', May:'Dia do Enfermagem', Jul:'9 Anos' } },
+  { label:'Conteúdo, Influenciadores e Comunidade', color:'#7bbfcc', objetivo:'Crescimento da marca. (Top of Heart)',
+    cells:{ Mar:'Carnaval\nSíndrome de Down', Apr:'Dia Mundial da Saúde\nPáscoa', May:'Endometriose\nGlaucoma',
+            Jun:'Teste do Pezinho\nMeio-ambiente\nOrgulho LGBT', Aug:'Saúde Ocular', Sep:'Dia da Gestante',
+            Nov:'Dia das Crianças', Dec:'Black Friday' } },
+  { label:'Endomarketing', color:'#e88a88', objetivo:'Marca empregadora forte e valorizada no mercado.',
+    cells:{ Mar:'Aux. de Limpeza\nDia do Dermatologista', Apr:'Infectologista\nObstetra', May:'Trabalhador\nOftalmologista',
+            Jun:'Festa Junina', Jul:'Pediatra', Aug:'Cardiologista\nPsicólogo\nNutricionista',
+            Sep:'Urologista\nNutriólogo\nOrtopedista', Oct:'Dentista Médico\nFisioterapeuta', Nov:'Biomédico', Dec:'Alergista\nFonoaudiólogo' } },
+  { label:'Trade', color:'#2d8c9a', objetivo:'Suporte para as franquias.',
+    cells:{ Jan:'Atualização dos canais digitais\nCampanha Simone Mendes', Mar:'Combate ao Câncer', Aug:'Dia Nacional da Saúde', Nov:'Diabetes', Dec:'Boas Festas' } },
+  { label:'Promocional', color:'#b02e2b', objetivo:'Ações de conversão em medicina, odonto, exames e telemedicina.',
+    cells:{ Feb:'Geral c/ preço\nExames\nAgendamento\nOdonto', Mar:'Saúde da Mulher', May:'Dia das Mães',
+            Jun:'Cashback\nAmor que Converte Odonto', Jul:'Amor que Converte Exames', Aug:'Dia dos Pais', Sep:'Set Amarelo', Oct:'Out Rosa', Nov:'Nov Azul' } },
+  { label:'Branding', color:'#1e6e7a', objetivo:'Gestão da marca.',
+    cells:{ Jun:'Copa do Mundo\nPesquisa de Marca T0', Oct:'Reclame Aqui\nCampanha Nacional' } },
+  { label:'Eventos / Corporativo / Produção', color:'#4a9db0', objetivo:'Reputação e reconhecimento.',
+    cells:{ Feb:'Evento MOBIL', May:'10 Anos\nEngajamento', Jun:'10 Anos\nAções', Jul:'10 Anos\nCulminância', Dec:'Congresso' } },
+  { label:'Marketing Social', color:'#e0916a', objetivo:'Reconhecimento e relacionamento com o mercado.',
+    cells:{ Apr:'Autismo', Jun:'Junho Vermelho\nAgasalho', Dec:'Natal Solidário' } },
+];
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dirBody = document.getElementById('dir-body');
+dirRows.forEach(row => {
+  const tr = document.createElement('tr');
+  let html = `<td><div class="row-label"><div class="row-stripe" style="background:${row.color}"></div>${row.label}</div></td><td>${row.objetivo}</td>`;
+  months.forEach(m => {
+    const c = row.cells[m]||'';
+    if(c){ html += `<td>${c.split('\n').map(l=>`<div class="cell-tag" style="background:${row.color}">${l}</div>`).join('')}</td>`; }
+    else { html += '<td></td>'; }
+  });
+  tr.innerHTML = html;
+  dirBody.appendChild(tr);
+});
+
+const krMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const kr1Rows = [
+  { kpi:'KPI 1\nVol. de Agendamentos\n+9,2% vs 2025', cells:{
+    Apr:[
+      {type:'pleito',title:'Pleito: Cross-Sell Confirmação',sub:'Adaptar e-mail',prazo:'24/04',link:'https://sede-amorsaude.monday.com/boards/18404831077/pulses/11747429388'},
+      {type:'kr1',title:'Campanhas Odonto — Amor que Converte',sub:'Avaliação técnica ofertas nacionais',prazo:'06/04'},
+      {type:'kr1',title:'Campanhas Odonto — Amor que Converte',sub:'Acompanhamento conversão combos',prazo:'13/04'},
+      {type:'kr1',title:'Campanhas Odonto — Amor que Converte',sub:'Análise jurídica Dental Vidas nos canais',prazo:'30/04'},
+    ],
+    May:[
+      {type:'kr1',title:'Campanhas Odonto — Amor que Converte',sub:'Sabadão de Todos',prazo:'11/05'},
+      {type:'kr1',title:'Campanhas Odonto — Amor que Converte',sub:'Criação KVs por condição comercial',prazo:'07/05'},
+      {type:'kr1',title:'Campanhas Odonto — Amor que Converte',sub:'Derivação peças — Enxoval PDV+CRM+RS+Canais',prazo:'14/05'},
+      {type:'kr1',title:'Campanhas Odonto — Amor que Converte',sub:'Templates WhatsApp com combos',prazo:'14/05'},
+      {type:'kr1',title:'Campanhas Odonto — Amor que Converte',sub:'Plano divulgação orgânica — PR, RS, Blog',prazo:'25/05'},
+      {type:'kr1',title:'Campanhas Odonto — Amor que Converte',sub:'Disparos campanhas via CRM',prazo:'25/05'},
+    ],
+    Jun:[
+      {type:'kr1',title:'Campanhas Odonto — Amor que Converte',sub:'Ranking vendas ofertas odonto mensal — PDV',prazo:'15/06'},
+    ],
+    Dec:[
+      {type:'kr1',title:'Campanhas Odonto — Amor que Converte',sub:'Quem sabe ensina — apoio',prazo:'17/12'},
+    ],
+  }},
+  { kpi:'KPI 3\nNovos pacientes\n+11,8% vs 2025', cells:{
+    Jan:[{type:'kr1',title:'Mesa de Performance: Frente Odontologia',sub:'Jan–Dez · Atualização LP, jornada de aquisição e tráfego pago',link:'https://sede-amorsaude.monday.com/boards/18404831077/pulses/11767177791'}],
+    Apr:[{type:'pleito',title:'Fortalecimento de Branding em Odontologia',sub:'Instrução normativa para implantação do enxoval de odontologia da nova campanha nacional',prazo:'30/04',link:'https://sede-amorsaude.monday.com/boards/18404831077/pulses/11766938646'}],
+    May:[{type:'pleito',title:'Liberação e Curadoria Instagram por Clínica',sub:'Estudo de ganhos e perdas',link:'https://sede-amorsaude.monday.com/boards/18404831077/pulses/11572579498',prazo:'Mai'}],
+    Aug:[{type:'kr1',title:'VTs Odontologia Campanha Nacional',sub:'Veiculação',link:'https://sede-amorsaude.monday.com/boards/18404831077/pulses/11766951474'}],
+  }},
+  { kpi:'KPI 4\nEfetivação\n+15% vs 2025', cells:{
+    Aug:[{type:'pleito',title:'Pleito: Recuperação orçamentos parados',sub:''}],
+  }},
+];
+const kr2Rows = [
+  { kpi:'KPI 1\nAgendamentos\n+5,3% vs 2025', cells:{
+    Jan:[
+      {type:'kr2',title:'Mídia Local',sub:'Reporte Mensal',prazo:'Jan–Dez'},
+    ],
+    Apr:[
+      {type:'kr2',title:'Campanhas Exames — Amor que Converte',sub:'Avaliação técnica ofertas nacionais',prazo:'20/04'},
+    ],
+    May:[
+      {type:'kr2',title:'Mesa de Performance Frente Exames',sub:'Atualização LP de Exames',prazo:'10/05'},
+      {type:'kr2',title:'Mesa de Performance Frente Exames',sub:'Otimizar campanhas tráfego pago + ofertas comerciais — mensal'},
+      {type:'kr2',title:'Campanhas Exames — Amor que Converte',sub:'Criação KVs por condição comercial',prazo:'04/05'},
+      {type:'pleito',title:'Pleito: Alinhamento Conteúdo Educacional para Pacientes',sub:'Alinhar com time técnico',prazo:'22/05'},
+    ],
+    Jul:[
+      {type:'kr2',title:'Campanhas Exames — Amor que Converte',sub:'Merchans no Programa Sabadão de Todos',prazo:'15/07'},
+      {type:'kr2',title:'Campanhas Exames — Amor que Converte',sub:'Acompanhamento conversão combos vendidos',prazo:'01–30/07'},
+      {type:'kr2',title:'Campanhas Exames — Amor que Converte',sub:'Ranking vendas ofertas exames mensal — PDV',prazo:'01/07'},
+      {type:'kr2',title:'Campanhas Exames — Amor que Converte',sub:'Plano divulgação orgânica — PR, RS, Blog',prazo:'01/07'},
+    ],
+    Dec:[
+      {type:'kr2',title:'Campanhas Exames — Amor que Converte',sub:'Suporte Programa Quem Sabe Ensina — Congresso',prazo:'17/12'},
+    ],
+  }},
+  { kpi:'KPI 2\nVol. de Atendimentos\n+12,6% vs 2025', cells:{
+    Jul:[{type:'pleito',title:'Pleito: Linhas do Cuidado',sub:'Enxoval + plano de divulgação · piloto dando certo'}],
+  }},
+  { kpi:'KPI 4\nFaturamento\n+12,1% vs 2025', cells:{
+    Mar:[{type:'pleito',title:'Pleito: Branding Nacional',sub:'Instrução Normativa KV Exames — Simone Mendes'}],
+    Apr:[{type:'pleito',title:'Pleito: VT Simone Mendes',sub:'Branding nacional'}],
+  }},
+];
+
+function buildKRTable(rows, bodyId){
+  const body = document.getElementById(bodyId);
+  rows.forEach(row => {
+    const tr = document.createElement('tr');
+    const kl = row.kpi.split('\n');
+    let html = `<td><strong>${kl[0]}<br>${kl[1]||''}</strong><br><span class="kpi-meta">${kl[2]||''}</span></td>`;
+    krMonths.forEach(m => {
+      const tags = row.cells[m]||[];
+      if(tags.length){
+        html += `<td>${tags.map(t=>{
+          const linkHtml = t.link ? `<a href="${t.link}" style="display:block;font-size:9px;color:#3fa3b3;text-decoration:none;margin-top:2px" target="_blank">↗ monday</a>` : '';
+          const prazoHtml = t.prazo ? `<span style="display:block;font-size:9px;opacity:0.7;margin-top:1px">⏱ ${t.prazo}</span>` : '';
+          return `<div class="kr-tag ${t.type}-tag"><span class="tag-title">${t.title}</span>${t.sub?`<span class="tag-sub">${t.sub}</span>`:''}${prazoHtml}${linkHtml}</div>`;
+        }).join('')}</td>`;
+      } else { html += '<td></td>'; }
+    });
+    tr.innerHTML = html;
+    body.appendChild(tr);
+  });
+}
+buildKRTable(kr1Rows,'kr1-body');
+buildKRTable(kr2Rows,'kr2-body');
+
+const kr3Rows = [
+  { kpi:'Plano Reputação\nAutomação ManyChat + C-Vortex\nNPS 51% · jun 30', cells:{
+    Jun:[{type:'kr1',title:'Plano Reputação',sub:'ManyChat + C-Vortex'}],
+  }},
+  { kpi:'Aumento Agendamentos App CDT\n+20% por regional\ndez 30', cells:{
+    Jan:[{type:'kr2',title:'Aumento Agendamentos Consulta App CDT',sub:'Campanha Embaixadora Simone Mendes — KV Cashback',prazo:'Jan'}],
+    May:[{type:'kr2',title:'Aumento Agendamentos Consulta App CDT',sub:'Ranking Cashback por regional',prazo:'Mai'},{type:'kr2',title:'Aumento Agendamentos Consulta App CDT',sub:'Revisão estratégica dos canais',prazo:'Mai–Jun'}],
+    Jun:[{type:'kr2',title:'Aumento Agendamentos Consulta App CDT',sub:'Jornada Educacional Automatizada Manychat — App e Cashback',prazo:'Jun'}],
+    Dec:[],
+  }},
+  { kpi:'Calendário Campanhas 2026\n7 campanhas + 120k leads\ndez 31', cells:{
+    Jun:[{type:'ambos',title:'Calendário Campanhas 2026',sub:'Ofertas telemedicina'}],
+  }},
+  { kpi:'Framework Suficiência de Rede', cells:{
+    May:[{type:'ambos',title:'Framework Suficiência de Rede',sub:''}],
+  }},
+  { kpi:'Campanha Trabalhe Conosco\n+30% acesso ao site\nmai 29', cells:{
+    May:[{type:'kr1',title:'Campanha Trabalhe Conosco',sub:'+30% acesso ao site'}],
+  }},
+  { kpi:'[Pleito] Campanha de Indicação', cells:{
+    Jun:[{type:'pleito',title:'Pleito: Campanha de Indicação',sub:''}],
+  }},
+];
+
+const kr4Rows = [
+  { kpi:'Framework Comunicação da Expansão\n100% franqueados TARGET\nmai 29', cells:{
+    May:[{type:'kr1',title:'Framework Comunicação Expansão',sub:'100% franqueados TARGET'}],
+  }},
+  { kpi:'Projeto Mídia Local Franquia Digital\n100% novas franquias digitais\ndez 30', cells:{
+    Dec:[{type:'kr2',title:'Mídia Local Franquia Digital',sub:'100% novas franquias'}],
+  }},
+  { kpi:'Gestão de Base CRM\nMensageria Abertura da Unidade', cells:{
+    Jun:[{type:'ambos',title:'Gestão de Base CRM',sub:'Mensageria Abertura da Unidade'}],
+  }},
+];
+
+const kr5Rows = [
+  { kpi:'Framework Conformidade Profissional\n+35% especialistas\nmai 1', cells:{
+    May:[{type:'kr1',title:'Framework Conformidade',sub:'+35% especialistas'}],
+  }},
+  { kpi:'[Pleito] Embaixadores do Amor', cells:{
+    May:[{type:'pleito',title:'Pleito: Embaixadores do Amor',sub:''}],
+  }},
+  { kpi:'[Pleito] Sinaxys\n100% gestores impactados', cells:{
+    May:[{type:'pleito',title:'Pleito: Sinaxys',sub:'100% gestores impactados'}],
+  }},
+];
+
+const negRows = [
+  { kpi:'[KR2] Branding Nacional\n+10 pontos conhecimento\nout 30', cells:{
+    Oct:[{type:'kr2',title:'Branding Nacional',sub:'+10 pontos conhecimento'}],
+  }},
+  { kpi:'[KR2] Evento – Congresso 2026\n100% franqueados impactados\ndez 15', cells:{
+    Dec:[{type:'kr2',title:'Congresso 2026',sub:'100% franqueados impactados'}],
+  }},
+];
+
+buildKRTable(kr3Rows,'kr3-body');
+buildKRTable(kr4Rows,'kr4-body');
+buildKRTable(kr5Rows,'kr5-body');
+buildKRTable(negRows,'neg-body');
+
+function switchTab(view, btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const allSecs = ['sec-kr1','sec-kr2','sec-kr3','sec-kr4','sec-kr5','sec-neg'];
+  document.getElementById('view-diretoria').style.display = view==='diretoria'?'block':'none';
+  const krView = document.getElementById('view-kr');
+  if(view==='diretoria'){
+    krView.style.display='none';
+  } else {
+    krView.style.display='block';
+    allSecs.forEach(id=>{
+      document.getElementById(id).style.display = ('sec-'+view)===id ? 'block' : 'none';
+    });
+  }
+}
+</script>
+</body>
+</html>
